@@ -1,0 +1,19 @@
+{
+  "name": "synapticism/ubik-text",
+  "description": "Simple text processing functions for WordPress",
+  "keywords": [
+    "wordpress",
+    "wordpress-plugin",
+    "plugin"
+  ],
+  "homepage": "https://github.com/synapticism/ubik-text",
+  "license": "GPL-3.0",
+  "authors": [
+    {
+      "name": "Alexander Synaptic",
+      "email": "alexander@synapticism.com",
+      "homepage": "http://alexandersynaptic.com"
+    }
+  ],
+  "type": "library"
+}

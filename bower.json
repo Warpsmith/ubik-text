@@ -1,0 +1,21 @@
+{
+  "name": "ubik-text",
+  "homepage": "https://github.com/synapticism/ubik-text",
+  "authors": [
+    "Alexander Synaptic <alexander@synapticism.com>"
+  ],
+  "keywords": [
+    "wordpress",
+    "wordpress-plugin",
+    "plugin"
+  ],
+  "license": "GPL-3.0",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
