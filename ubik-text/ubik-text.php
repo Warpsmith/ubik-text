@@ -5,9 +5,9 @@
  * Description: Simple font loading functions for WordPress
  * Author: Alexander Synaptic
  * Author URI: http://alexandersynaptic.com
- * Version: 0.0.3
+ * Version: 0.0.4
  */
-define( 'UBIK_TEXT_VERSION', '0.0.3' );
+define( 'UBIK_TEXT_VERSION', '0.0.4' );
 
 // Do not call this plugin directly
 if ( !defined( 'WPINC' ) )
@@ -21,4 +21,6 @@ if ( is_readable( trailingslashit( plugin_dir_path( __FILE__ ) ) . 'ubik-text-co
 require_once( trailingslashit( plugin_dir_path( __FILE__ ) ) . 'ubik-text-config-defaults.php' );
 
 // Load plugin core
-require_once( trailingslashit( plugin_dir_path( __FILE__ ) ) . 'ubik-text-core.php' );
+require_once( trailingslashit( plugin_dir_path( __FILE__ ) ) . 'ubik-text-replace.php' );
+require_once( trailingslashit( plugin_dir_path( __FILE__ ) ) . 'ubik-text-strip.php' );
+require_once( trailingslashit( plugin_dir_path( __FILE__ ) ) . 'ubik-text-truncate.php' );
