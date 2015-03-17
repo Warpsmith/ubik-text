@@ -23,36 +23,41 @@ function ubik_text_replacement( $content = '' ) {
     , '<p>*</p>'      => '<p class="divider asterism">&#x2042;</p>'       // Asterisk on its own line = Asterism: https://en.wikipedia.org/wiki/Asterism_(typography)
     )
   , 'typography' => array(
-      '&#8212;'       => '&#8202;&#8212;&#8202;'                          // Surround em dashes in hair spaces
-    , '&#8211;'       => '&#8202;&#8211;&#8202;'                          // Surround en dashes in hair spaces
-    , '/No.'          => '<span class="numero">&#8470;</span>'            // Numero sign: https://en.wikipedia.org/wiki/Numero_sign
+      '&#8211;'       => '&#x200A;&#8211;&#x200A;'                        // En dash; surrounded with hair spaces: &#x200A;
+    , '&#8212;'       => '&#x200A;&#8212;&#x200A;'                        // Em dash; surrounded with hair spaces: &#x200A;
+    , '/No.'          => '<span class="numero">&#x2116;</span>'           // Numero sign: https://en.wikipedia.org/wiki/Numero_sign
     , '/|P'           => '<span class="pilcrow">&#x00B6;</span>'          // Pilcrow: https://en.wikipedia.org/wiki/Pilcrow
     , '/|S'           => '<span class="section">&#x00A7;</span>'          // Section symbol: https://en.wikipedia.org/wiki/Section_sign
-    , '?!'            => '&#8253;'                                        // Interrobang: https://en.wikipedia.org/wiki/Interrobang
+    , '?!'            => '&#x203D;'                                       // Interrobang: https://en.wikipedia.org/wiki/Interrobang
     , ' & '           => ' <span class="ampersand">&</span> '             // A styling hook for ampersands
+    , '/AE'           => '&#x00C6'                                        // Capital ash: https://codepoints.net/U+00C6
+    , '/ae'           => '&#x00E6'                                        // Lower case ash: https://codepoints.net/U+00E6
     )
   , 'figures' => array(
-      ' 1/2 '     => '&#189; '
-    , ' 1/4 '     => '&#188; '
-    , ' 3/4 '     => '&#190; '
-    , '+/-'       => '&#177;&#8202;'
-    , '+-'        => '&#177;&#8202;'
-    , '^oC'       => '&#176;C'
-    , '^oF'       => '&#176;F'
+      ' 1/4 '     => '&#x00BC; '
+    , ' 1/2 '     => '&#x00BD; '
+    , ' 3/4 '     => '&#x00BE; '
+    , '^oC'       => '&#x00B0;C'
+    , '^oF'       => '&#x00B0;F'
+    , '+/-'       => '&#x00B1;&#x200A;'
+    , '+-'        => '&#x00B1;&#x200A;'
+    , '^1 '       => '&#x00B9; '
+    , '^2 '       => '&#x00B2; '
+    , '^3 '       => '&#x00B3; '
     )
   , 'currency' => array(
-      'CNY '      => '&#165;&#8202;'  // Chinese renminbi
-    , 'EUR '      => '&#8364;&#8202;' // Euro
-    , 'GBP '      => '&#163;&#8202;'  // Pound
-    , 'JPY '      => '&#165;&#8202;'  // Japanese yen
-    , 'KRW '      => '&#8361;&#8202;' // Korean won
-    , 'THB '      => '&#3647;&#8202;' // Thai baht
+      'CNY '      => '&#165;&#x200A;'   // Chinese renminbi
+    , 'EUR '      => '&#8364;&#x200A;'  // Euro
+    , 'GBP '      => '&#163;&#x200A;'   // Pound
+    , 'JPY '      => '&#165;&#x200A;'   // Japanese yen
+    , 'KRW '      => '&#8361;&#x200A;'  // Korean won
+    , 'THB '      => '&#3647;&#x200A;'  // Thai baht
     )
   , 'ip' => array(
-      '(c)'       => '&#169;'         // Copyright: https://en.wikipedia.org/wiki/Copyright_symbol
-    , '(p)'       => '&#8471;'        // Sound recording: https://en.wikipedia.org/wiki/Sound_recording_copyright_symbol
-    , '(r)'       => '&#174;'         // Registed trademark: https://en.wikipedia.org/wiki/Registered_trademark_symbol
-    , '(sm)'      => '&#8480;'        // Service mark: https://en.wikipedia.org/wiki/Service_mark_symbol
+      '(c)'       => '&#x00A9;'         // Copyright: https://en.wikipedia.org/wiki/Copyright_symbol
+    , '(p)'       => '&#x2117;'         // Sound recording: https://en.wikipedia.org/wiki/Sound_recording_copyright_symbol
+    , '(r)'       => '&#x00AE;'         // Registed trademark: https://en.wikipedia.org/wiki/Registered_trademark_symbol
+    , '(sm)'      => '&#x2120;'         // Service mark: https://en.wikipedia.org/wiki/Service_mark_symbol
     )
   , 'hearts' => array(
       ' &lt;3 '       => ' <span class="heart">&#x2665;</span> '          // <3 = Normal heart: http://codepoints.net/U+2665
@@ -64,6 +69,7 @@ function ubik_text_replacement( $content = '' ) {
       '==>'       => '&nbsp;&rarr;'
     , '==&gt;'    => '&nbsp;&rarr;'
     , '&lt;=='    => '&larr;&nbsp;'
+    , '/KHOMUT'   => '&#x0E5B;'        // Thai khomut: https://codepoints.net/U+0E5B
     )
   , 'zerowidth' => array(
       '/ZWSP'         => '&#x200B;'   // Zero-width space: https://en.wikipedia.org/wiki/Zero-width_space
@@ -91,8 +97,8 @@ function ubik_text_replacement( $content = '' ) {
 // Strip opening `aside` elements from a string
 // Use case: allows the use of `<aside>This post is a continuation of...</aside>` without this throw-away text dominating the feed and meta descriptions
 function ubik_text_strip_asides( $text ) {
-  if ( strpos( $text, '<aside' ) < 10 ) // Anywhere in the first 10 characters
-    $text = preg_replace( '/<aside>(.*?)<\/aside>/si', '', $text, 1 );
+  if ( strpos( $text, '<aside' ) !== false && strpos( $text, '<aside' ) < 16 ) // Only strip asides in the first 16 characters; this accounts for some of the gunk WP throws in when processing post content for RSS etc.
+    $text = preg_replace( '/<aside(.*?)<\/aside>/si', '', $text, 1 );
   return $text;
 }
 

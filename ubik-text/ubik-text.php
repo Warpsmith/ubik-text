@@ -5,9 +5,9 @@
  * Description: Simple font loading functions for WordPress
  * Author: Alexander Synaptic
  * Author URI: http://alexandersynaptic.com
- * Version: 0.0.2
+ * Version: 0.0.3
  */
-define( 'UBIK_TEXT_VERSION', '0.0.2' );
+define( 'UBIK_TEXT_VERSION', '0.0.3' );
 
 // Do not call this plugin directly
 if ( !defined( 'WPINC' ) )
