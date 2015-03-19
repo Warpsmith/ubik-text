@@ -3,8 +3,10 @@
 // Text replacement; before adding anything be sure to consult the list of existing replacements: http://codex.wordpress.org/Function_Reference/wptexturize
 // @filter: ubik_text_replace
 function ubik_text_replace( $content = '' ) {
-  return apply_filters( 'ubik_text_replace', $content );
+  return apply_filters( 'ubik_text_replace', ubik_text_replace_simple( $content ) );
 }
+
+
 
 // Simple text replacement; expands on core `wptexturize` function to provide additional typographic shorthand and clean-up using simple matching
 // @filter: ubik_text_replace_simple
@@ -19,6 +21,7 @@ function ubik_text_replace_simple( $content = '' ) {
     'dividers'    => ubik_text_replace_dividers()
   , 'typography'  => ubik_text_replace_typography()
   , 'ligatures'   => ubik_text_replace_ligatures()
+  , 'diacritics'  => ubik_text_replace_diacritics()
   , 'figures'     => ubik_text_replace_figures()
   , 'currencies'  => ubik_text_replace_currencies()
   , 'ip'          => ubik_text_replace_ip()
@@ -38,6 +41,9 @@ function ubik_text_replace_simple( $content = '' ) {
 }
 add_filter( 'ubik_text_replace', 'ubik_text_replace_simple' );
 
+
+
+// Dividers (should be first)
 function ubik_text_replace_dividers() {
   return apply_filters( 'ubik_text_replace_dividers', array(
     '<p>&lt;3</p>'  => '<p class="divider heart">&#x2665;</p>'          // <3 = Normal heart: http://codepoints.net/U+2665
@@ -46,6 +52,9 @@ function ubik_text_replace_dividers() {
   ) );
 }
 
+
+
+// Typhography
 function ubik_text_replace_typography() {
   return apply_filters( 'ubik_text_replace_typography', array(
     '&#8211;'       => '&#x200A;&#8211;&#x200A;'                        // En dash; surrounded with hair spaces: &#x200A;
@@ -62,6 +71,9 @@ function ubik_text_replace_typography() {
   ) );
 }
 
+
+
+// Ligatures
 function ubik_text_replace_ligatures() {
   return apply_filters( 'ubik_text_replace_ligatures', array(
     'Aegis'       => '&#x00C6;gis'
@@ -97,6 +109,28 @@ function ubik_text_replace_ligatures() {
   ) );
 }
 
+
+
+// Common English words with diacritics; for reference: https://en.wiktionary.org/wiki/Appendix:English_words_with_diacritics
+function ubik_text_replace_diacritics() {
+  return apply_filters( 'ubik_text_replace_diacritics', array(
+    'Belle epoque'  => 'Belle &#x00C9;poque'
+  , 'belle epoque'  => 'belle &#x00E9;poque'
+  , 'bete noir'     => 'b&#x00EA;te noir' // Handles endings with or without 'e'
+  , 'bric-a-brac'   => 'bric-&#x00E0;-brac'
+  , 'cliche'        => 'cliché'
+  , 'cooperat'      => 'co&#x00F6;perat' // Covers several variants
+  , 'coordinat'     => 'co&#x00F6;rdinat'
+  , 'facade'        => 'fa&#x00E7;ade'
+  , 'jalapeno'      => 'jalape&#x00F1;o'
+  , 'naivete'       => 'na&#x00EF;vet&#x00E9;' // Needs to be in this order
+  , 'naive'         => 'na&#x00EF;ve'
+  ) );
+}
+
+
+
+// Figures, numbers, math, etc.
 function ubik_text_replace_figures() {
   return apply_filters( 'ubik_text_replace_figures', array(
     ' 1/4 '     => '&#x00BC; '
@@ -112,6 +146,9 @@ function ubik_text_replace_figures() {
   ) );
 }
 
+
+
+// Currencies
 function ubik_text_replace_currencies() {
   return apply_filters( 'ubik_text_replace_currencies', array(
     'CNY '      => '&#165;&#x200A;'   // Chinese renminbi
@@ -123,6 +160,9 @@ function ubik_text_replace_currencies() {
   ) );
 }
 
+
+
+// Intellectual property
 function ubik_text_replace_ip() {
   return apply_filters( 'ubik_text_replace_ip', array(
     '(c)'       => '&#x00A9;'         // Copyright: https://en.wikipedia.org/wiki/Copyright_symbol
@@ -132,6 +172,9 @@ function ubik_text_replace_ip() {
   ) );
 }
 
+
+
+// Hearts
 function ubik_text_replace_hearts() {
   return apply_filters( 'ubik_text_replace_hearts', array(
     ' &lt;3 '       => ' <span class="heart">&#x2665;</span> '          // <3 = Normal heart: http://codepoints.net/U+2665
@@ -141,6 +184,9 @@ function ubik_text_replace_hearts() {
   ) );
 }
 
+
+
+// Arrows
 function ubik_text_replace_arrows() {
   return apply_filters( 'ubik_text_replace_arrows', array(
     '==>'       => '&nbsp;&rarr;'
@@ -150,6 +196,9 @@ function ubik_text_replace_arrows() {
   ) );
 }
 
+
+
+// Zero-width characters
 function ubik_text_replace_zerowidth() {
   return apply_filters( 'ubik_text_replace_zerowidth', array(
     '/ZWSP'         => '&#x200B;'   // Zero-width space: https://en.wikipedia.org/wiki/Zero-width_space
@@ -158,6 +207,9 @@ function ubik_text_replace_zerowidth() {
   ) );
 }
 
+
+
+// Hook this function to add your own replacements
 function ubik_text_replace_custom() {
   return apply_filters( 'ubik_text_replace_custom', array() );
 }

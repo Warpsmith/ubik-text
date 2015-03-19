@@ -29,7 +29,7 @@ function ubik_text_truncate(
 
   // Check the $strip array
   if ( empty( $strip ) || !is_array( $strip ) )
-    $strip = apply_filters( 'ubik_text_truncate_strip', array( 'asides', 'code', 'tags' ) ); // Note: 'shortcodes' *not* included by default
+    $strip = apply_filters( 'ubik_text_truncate_strip', array( 'asides', 'code', 'footnotes', 'tags' ) ); // Note: 'shortcodes' *not* included by default
 
   // Shortcode handler; this one goes first as shortcodes may introduce HTML and other stuff that we may want to strip later
   if ( in_array( 'shortcodes', $strip ) ) {
@@ -46,7 +46,11 @@ function ubik_text_truncate(
   if ( in_array( 'code', $strip ) )
     $text = ubik_text_strip_code( $text );
 
-  // Strip all tags
+  // Strip footnotes wrapped in `sup` elements
+  if ( in_array( 'footnotes', $strip ) )
+    $text = ubik_text_strip_footnotes( $text );
+
+  // Strip all tags (but keep the contents)
   if ( in_array( 'tags', $strip ) )
     $text = strip_tags( $text ); // Abandoning `wp_strip_all_tags` here...
 
