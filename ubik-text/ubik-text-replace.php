@@ -20,7 +20,6 @@ function ubik_text_replace_simple( $content = '' ) {
   $replacements = apply_filters( 'ubik_text_replace_simple', array(
     'dividers'    => ubik_text_replace_dividers()
   , 'typography'  => ubik_text_replace_typography()
-  , 'ligatures'   => ubik_text_replace_ligatures()
   , 'diacritics'  => ubik_text_replace_diacritics()
   , 'figures'     => ubik_text_replace_figures()
   , 'currencies'  => ubik_text_replace_currencies()
@@ -73,58 +72,101 @@ function ubik_text_replace_typography() {
 
 
 
-// Ligatures
-function ubik_text_replace_ligatures() {
-  return apply_filters( 'ubik_text_replace_ligatures', array(
-    'Aegis'       => '&#x00C6;gis'
-  , 'aegis'       => '&#x00E6;gis'
-  , 'Aeolian'     => '&#x00C6;olian'
-  , 'aeolian'     => '&#x00E6;olian'
-  , 'Aeon'        => '&#x00C6;on'
-  , 'aeon'        => '&#x00E6;on'
-  , 'aesar'       => '&#x00E6;sar' // Caesar
-  , 'Aesthe'      => '&#x00C6;sthet' // Aesthetic, aesthete, anaesthesia
-  , 'aesthe'      => '&#x00E6;sthet' // Aesthetic, aesthete, anaesthesia
-  , 'Aether'      => '&#x00C6;ther'
-  , 'aether'      => '&#x00E6;ther'
-  , 'algae'       => 'alg&#x00E6;'
-  , 'anaesthes'   => 'an&#x00E6;s'
-  , 'angaea'      => 'ang&#x00E6;a' // Pangaea
-  , 'antennae'    => 'antenn&#x00E6;'
-  , 'archae'      => 'arch&#x00E6;'
-  , 'cyclopaed'   => 'cyclop&#x00E6;d'
-  , 'daemon'      => 'd&#x00E6;mon'
-  , 'diaeresis'   => 'di&#x00E6;resis'
-  , 'formulae'    => 'formul&#x00E6;'
-  , 'medieval'    => 'medi&#x00E6;val'
-  , 'nebulae'     => 'nebul&#x00E6;'
-  , 'novae'       => 'nov&#x00E6;'
-  , 'paleo'       => 'pal&#x00E6;o'
-  , 'personae'    => 'person&#x00E6;'
-  , 'primeval'    => 'prim&#x00E6;val'
-  , 'vitae'       => 'vit&#x00E6;'
-  , 'foetid'      => 'f&#x0153;tid'
-  , 'foetus'      => 'f&#x0153;tus'
-  , 'oeuvre'      => '&#x0153;uvre' // Will catch manoeuvre
-  ) );
-}
-
-
-
 // Common English words with diacritics; for reference: https://en.wiktionary.org/wiki/Appendix:English_words_with_diacritics
 function ubik_text_replace_diacritics() {
+
+  // Diacritic definitions
+  $ae         = '&#x00E6;';
+  $ae_c       = '&#x00C6;';
+  $oe         = '&#x0153;';
+  $a_circum   = '&#x00E2;';
+  $a_grave    = '&#x00E0;';
+  $a_ring     = '&#x00E5;';
+  $a_umlaut   = '&#x00E4;';
+  $c_cedilla  = '&#x00E7;';
+  $e_acute    = '&#x00E9;';
+  $e_acute_c  = '&#x00C9;';
+  $e_circum   = '&#x00FA;';
+  $i_umlaut   = '&#x00EF;';
+  $n_tilde    = '&#x00F1;';
+  $o_umlaut   = '&#x00F6;';
+
+  // Some of these have had the first character lopped off to account for differences in capitalization
   return apply_filters( 'ubik_text_replace_diacritics', array(
-    'Belle epoque'  => 'Belle &#x00C9;poque'
-  , 'belle epoque'  => 'belle &#x00E9;poque'
-  , 'bete noir'     => 'b&#x00EA;te noir' // Handles endings with or without 'e'
-  , 'bric-a-brac'   => 'bric-&#x00E0;-brac'
-  , 'cliche'        => 'cliché'
-  , 'cooperat'      => 'co&#x00F6;perat' // Covers several variants
-  , 'coordinat'     => 'co&#x00F6;rdinat'
-  , 'facade'        => 'fa&#x00E7;ade'
-  , 'jalapeno'      => 'jalape&#x00F1;o'
-  , 'naivete'       => 'na&#x00EF;vet&#x00E9;' // Needs to be in this order
-  , 'naive'         => 'na&#x00EF;ve'
+    'Aegis'         => $ae_c . 'gis'
+  , 'aegis'         => $ae . 'gis'
+  , 'Aeolian'       => $ae_c . 'olian'
+  , 'aeolian'       => $ae . 'olian'
+  , 'Aeon'          => $ae_c . 'on'
+  , 'aeon'          => $ae . 'on'
+  , 'aesar'         => $ae . 'sar' // Caesar
+  , 'Aesthe'        => $ae_c . 'sthet' // Aesthetic, aesthete, anaesthesia
+  , 'aesthe'        => $ae . 'sthet' // Aesthetic, aesthete, anaesthesia
+  , 'Aether'        => $ae_c . 'ther'
+  , 'aether'        => $ae . 'ther'
+  , 'Algae'         => 'Alg' . $ae
+  , 'algae'         => 'alg' . $ae
+  , 'naesthes'      => 'n' . $ae . 's' // Anaesthesia
+  , 'ntennae'       => 'ntenn' . $ae // Antennae
+  , 'Archae'        => 'Arch' . $ae
+  , 'archae'        => 'arch' . $ae
+  , 'cyclopaed'     => 'cyclop' . $ae . 'd' // Encyclopaedia
+  , 'cycloped'      => 'cyclop' . $ae . 'd' // Encyclopedia
+  , 'daemon'        => 'd' . $ae . 'mon' // Daemon
+  , 'iaeresis'      => 'i' . $ae . 'resis' // Diaeresis
+  , 'formulae'      => 'formul' . $ae // Formulae
+  , 'edieval'       => 'edi' . $ae . 'val' // Medieval
+  , 'ebulae'        => 'ebul' . $ae // Nebulae
+  , 'novae'         => 'nov' . $ae // (Super)novae
+  , 'Paleo'         => 'Pal' . $ae . 'o'
+  , 'paleo'         => 'pal' . $ae . 'o'
+  , 'angaea'        => 'ang' . $ae . 'a' // Pangaea
+  , 'personae'      => 'person' . $ae // Personae
+  , 'rimeval'       => 'rim' . $ae . 'val' // Primeval
+  , ' vitae'        => ' vit' . $ae // Curriculum vitae
+  , 'fetid '        => 'f' . $oe . 'tid ' // Foetid
+  , 'foetid'        => 'f' . $oe . 'tid' // Foetid
+  , 'fetus '        => 'f' . $oe . 'tus ' // Foetus
+  , 'foetus'        => 'f' . $oe . 'tus' // Foetus
+  , 'oeuvre'        => $oe . 'uvre' // Will catch manoeuvre
+  , 'Belle epoque'  => 'Belle ' . $e_acute_c . 'poque'
+  , 'belle epoque'  => 'belle ' . $e_acute . 'poque'
+  , 'bete noir'     => 'b' . $e_circum . 'te noir' // Handles endings with or without 'e'
+  , 'ric-a-brac'    => 'ric-' . $a_grave . '-brac'
+  , 'Cliche'        => 'Clich' . $e_acute
+  , 'cliche'        => 'clich' . $e_acute
+  , 'ooperat'       => 'co' . $o_umlaut . 'perat' // Cooperate; covers several variants
+  , 'oordinat'      => 'co' . $o_umlaut . 'rdinat' // Coordinate
+  , 'oup de grace'  => 'oup de gr' . $a_circum . 'ce' // Coup de grace
+  , ' dais '        => ' da' . $i_umlaut . 's ' // Spaced out
+  , 'declasse'      => 'd' . $e_acute . 'class' . $e_acute
+  , 'eja vu'        => $e_acute . 'j' . $a_grave . ' vu' // Deja vu
+  , 'enouement'     => $e_acute . 'nouement' // Denouement
+  , 'detente'       => 'd' . $e_acute . 'tente'
+  , 'oppelganger'   => 'oppelg' . $a_umlaut . 'nger' // Doppelganger
+  , 'El Nino'       => 'El Ni' . $n_tilde . 'o'
+  , 'emigre'        => $e_acute . 'migr' . $e_acute
+  , 'entree'        => 'entr' . $e_acute . 'e'
+  , 'facade'        => 'fa' . $c_cedilla . 'ade'
+  , 'fiance'        => 'fianc' . $e_acute
+  , 'foehn wind'    => 'f' . $o_umlaut . 'hn wind'
+  , 'fohn wind'     => 'f' . $o_umlaut . 'hn wind'
+  , 'alapeno'       => 'alape' . $n_tilde . 'o' // Jalapeno
+  , 'La Nina'       => 'La Ni' . $n_tilde . 'a'
+  , 'matinee'       => 'matin' . $e_acute . 'e'
+  , 'melange'       => 'm' . $e_acute . 'lange'
+  , 'Naivete'       => 'Na' . $i_umlaut . 'vet' . $e_acute // Needs to be in this order
+  , 'naivete'       => 'na' . $i_umlaut . 'vet' . $e_acute // Needs to be in this order
+  , 'naive'         => 'na' . $i_umlaut . 've'
+  , 'Naive'         => 'Na' . $i_umlaut . 've'
+  , ' passe '       => ' pass' . $e_acute . ' '
+  , ' passe.'       => ' pass' . $e_acute . '.'
+  , ' passe!'       => ' pass' . $e_acute . '!'
+  , ' passe?'       => ' pass' . $e_acute . '?'
+  , 'protoge'       => 'prot' . $e_acute . 'g' . $e_acute
+  , 'puree'         => 'pur' . $e_acute . 'e'
+  , 'Quebec'        => 'Qu' . $e_acute . 'bec'
+  , 'morgasbord'    => 'm' . $o_umlaut . 'rg' . $a_ring . 'sbord'
   ) );
 }
 
