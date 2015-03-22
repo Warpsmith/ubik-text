@@ -56,8 +56,8 @@ function ubik_text_replace_dividers() {
 // Typhography
 function ubik_text_replace_typography() {
   return apply_filters( 'ubik_text_replace_typography', array(
-    '&#8211;'       => '&#x200A;&#8211;&#x200A;'                        // En dash; surrounded with hair spaces: &#x200A;
-  , '&#8212;'       => '&#x200A;&#8212;&#x200A;'                        // Em dash; surrounded with hair spaces: &#x200A;
+    '&#8211;'       => '&#x200A;&#x2013;&#x200A;'                       // En dash surrounded with hair spaces
+  , '&#8212;'       => '&#x200A;&#x2014;&#x200A;'                       // Em dash surrounded with hair spaces
   , ' & '           => ' <span class="ampersand">&</span> '             // A styling hook for ampersands
   , '/No.'          => '<span class="numero">&#x2116;</span>'           // Numero sign: https://en.wikipedia.org/wiki/Numero_sign
   , '/|P'           => '<span class="pilcrow">&#x00B6;</span>'          // Pilcrow: https://en.wikipedia.org/wiki/Pilcrow
