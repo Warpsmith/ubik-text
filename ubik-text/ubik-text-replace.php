@@ -19,14 +19,13 @@ function ubik_text_replace_simple( $content = '' ) {
   // Please note that these replacement rules are applied in sequence
   $replacements = apply_filters( 'ubik_text_replace_simple', array(
     'dividers'    => ubik_text_replace_dividers()
-  , 'typography'  => ubik_text_replace_typography()
   , 'diacritics'  => ubik_text_replace_diacritics()
+  , 'typography'  => ubik_text_replace_typography()
   , 'figures'     => ubik_text_replace_figures()
   , 'currencies'  => ubik_text_replace_currencies()
   , 'ip'          => ubik_text_replace_ip()
   , 'hearts'      => ubik_text_replace_hearts()
   , 'arrows'      => ubik_text_replace_arrows()
-  , 'zerowidth'   => ubik_text_replace_zerowidth()
   , 'custom'      => ubik_text_replace_custom()
   ) );
 
@@ -53,120 +52,100 @@ function ubik_text_replace_dividers() {
 
 
 
-// Typhography
-function ubik_text_replace_typography() {
-  return apply_filters( 'ubik_text_replace_typography', array(
-    '&#8211;'       => '&#x200A;&#x2013;&#x200A;'                       // En dash surrounded with hair spaces
-  , '&#8212;'       => '&#x200A;&#x2014;&#x200A;'                       // Em dash surrounded with hair spaces
-  , ' & '           => ' <span class="ampersand">&</span> '             // A styling hook for ampersands
-  , '/No.'          => '<span class="numero">&#x2116;</span>'           // Numero sign: https://en.wikipedia.org/wiki/Numero_sign
-  , '/|P'           => '<span class="pilcrow">&#x00B6;</span>'          // Pilcrow: https://en.wikipedia.org/wiki/Pilcrow
-  , '/|S'           => '<span class="section">&#x00A7;</span>'          // Section symbol: https://en.wikipedia.org/wiki/Section_sign
-  , '?!'            => '&#x203D;'                                       // Interrobang: https://en.wikipedia.org/wiki/Interrobang
-  , '/AE'           => '&#x00C6;'                                       // AE: https://codepoints.net/U+00C6
-  , '/ae'           => '&#x00E6;'                                       // ae: https://codepoints.net/U+00E6
-  , '/OE'           => '&#x0152;'                                       // OE: https://codepoints.net/U+0152
-  , '/oe'           => '&#x0153;'                                       // oe: https://codepoints.net/U+0153
+// Common English words with diacritics; for reference: https://en.wiktionary.org/wiki/Appendix:English_words_with_diacritics
+function ubik_text_replace_diacritics() {
+  return apply_filters( 'ubik_text_replace_diacritics', array(
+    // Some of these have had the first character lopped off to account for differences in capitalization
+    'Aegis'         => '&AElig;gis'
+  , 'aegis'         => '&aelig;gis'
+  , 'Aeolian'       => '&AElig;olian'
+  , 'aeolian'       => '&aelig;olian'
+  , 'Aeon'          => '&AElig;on'
+  , 'aeon'          => '&aelig;on'
+  , 'aesar'         => '&aelig;sar' // Caesar
+  , 'Aesthe'        => '&AElig;sthet' // Aesthetic, aesthete, anaesthesia
+  , 'aesthe'        => '&aelig;sthet' // Aesthetic, aesthete, anaesthesia
+  , 'Aether'        => '&AElig;ther'
+  , 'aether'        => '&aelig;ther'
+  , 'Algae'         => 'Alg&aelig;'
+  , 'algae'         => 'alg&aelig;'
+  , 'naesthes'      => 'n&aelig;s' // Anaesthesia
+  , 'ntennae'       => 'ntenn&aelig;' // Antennae
+  , 'Archae'        => 'Arch&aelig;'
+  , 'archae'        => 'arch&aelig;'
+  , 'cyclopaed'     => 'cyclop&aelig;d' // Encyclopaedia
+  , 'cycloped'      => 'cyclop&aelig;d' // Encyclopedia
+  , 'daemon'        => 'd&aelig;mon' // Daemon
+  , 'iaeresis'      => 'i&aelig;resis' // Diaeresis
+  , 'formulae'      => 'formul&aelig;' // Formulae
+  , 'edieval'       => 'edi&aelig;val' // Medieval
+  , 'ebulae'        => 'ebul&aelig;' // Nebulae
+  , 'novae'         => 'nov&aelig;' // (Super)novae
+  , 'Paleo'         => 'Pal&aelig;o'
+  , 'paleo'         => 'pal&aelig;o'
+  , 'angaea'        => 'ang&aelig;a' // Pangaea
+  , 'personae'      => 'person&aelig;' // Personae
+  , 'rimeval'       => 'rim&aelig;val' // Primeval
+  , ' vitae'        => ' vit&aelig;' // Curriculum vitae
+  , 'fetid '        => 'f&oelig;tid ' // Foetid
+  , 'foetid'        => 'f&oelig;tid' // Foetid
+  , 'fetus '        => 'f&oelig;tus ' // Foetus
+  , 'foetus'        => 'f&oelig;tus' // Foetus
+  , 'oeuvre'        => '&oelig;uvre' // Will catch manoeuvre
+  , 'Belle epoque'  => 'Belle &Eacute;poque'
+  , 'belle epoque'  => 'belle &eacute;poque'
+  , 'bete noir'     => 'b&ecirc;te noir' // Handles endings with or without 'e'
+  , 'ric-a-brac'    => 'ric-&agrave;-brac'
+  , 'Cliche'        => 'Clich&eacute;'
+  , 'cliche'        => 'clich&eacute;'
+  , 'ooperat'       => 'co&ouml;perat' // Cooperate; covers several variants
+  , 'oordinat'      => 'co&ouml;rdinat' // Coordinate
+  , 'oup de grace'  => 'oup de gr&acirc;ce' // Coup de grace
+  , ' dais '        => ' da&iuml;s ' // Spaced out
+  , 'declasse'      => 'd&eacute;class&eacute;'
+  , 'eja vu'        => '&eacute;j&agrave; vu' // Deja vu
+  , 'enouement'     => '&eacute;nouement' // Denouement
+  , 'detente'       => 'd&eacute;tente'
+  , 'oppelganger'   => 'oppelg&auml;nger' // Doppelganger
+  , 'El Nino'       => 'El Ni&ntilde;o'
+  , 'emigre'        => '&eacute;migr&eacute;'
+  , 'entree'        => 'entr&eacute;e'
+  , 'facade'        => 'fa&ccedil;ade'
+  , 'fiance'        => 'fianc&eacute;'
+  , 'foehn wind'    => 'f&ouml;hn wind'
+  , 'fohn wind'     => 'f&ouml;hn wind'
+  , 'alapeno'       => 'alape&ntilde;o' // Jalapeno
+  , 'La Nina'       => 'La Ni&ntilde;a'
+  , 'matinee'       => 'matin&eacute;e'
+  , 'melange'       => 'm&eacute;lange'
+  , 'Naivete'       => 'Na&iuml;vet&eacute;' // Needs to precede naive
+  , 'naivete'       => 'na&iuml;vet&eacute;'
+  , 'naive'         => 'na&iuml;ve'
+  , 'Naive'         => 'Na&iuml;ve'
+  , ' passe '       => ' pass&eacute; '
+  , ' passe.'       => ' pass&eacute;.'
+  , ' passe!'       => ' pass&eacute;!'
+  , ' passe?'       => ' pass&eacute;?'
+  , 'protoge'       => 'prot&eacute;g&eacute;'
+  , 'puree'         => 'pur&eacute;e'
+  , 'Quebec'        => 'Qu&eacute;bec'
+  , 'morgasbord'    => 'm&ouml;rg&aring;sbord'
   ) );
 }
 
 
 
-// Common English words with diacritics; for reference: https://en.wiktionary.org/wiki/Appendix:English_words_with_diacritics
-function ubik_text_replace_diacritics() {
-
-  // Diacritic definitions
-  $ae         = '&#x00E6;';
-  $ae_c       = '&#x00C6;';
-  $oe         = '&#x0153;';
-  $a_circum   = '&#x00E2;';
-  $a_grave    = '&#x00E0;';
-  $a_ring     = '&#x00E5;';
-  $a_umlaut   = '&#x00E4;';
-  $c_cedilla  = '&#x00E7;';
-  $e_acute    = '&#x00E9;';
-  $e_acute_c  = '&#x00C9;';
-  $e_circum   = '&#x00FA;';
-  $i_umlaut   = '&#x00EF;';
-  $n_tilde    = '&#x00F1;';
-  $o_umlaut   = '&#x00F6;';
-
-  // Some of these have had the first character lopped off to account for differences in capitalization
-  return apply_filters( 'ubik_text_replace_diacritics', array(
-    'Aegis'         => $ae_c . 'gis'
-  , 'aegis'         => $ae . 'gis'
-  , 'Aeolian'       => $ae_c . 'olian'
-  , 'aeolian'       => $ae . 'olian'
-  , 'Aeon'          => $ae_c . 'on'
-  , 'aeon'          => $ae . 'on'
-  , 'aesar'         => $ae . 'sar' // Caesar
-  , 'Aesthe'        => $ae_c . 'sthet' // Aesthetic, aesthete, anaesthesia
-  , 'aesthe'        => $ae . 'sthet' // Aesthetic, aesthete, anaesthesia
-  , 'Aether'        => $ae_c . 'ther'
-  , 'aether'        => $ae . 'ther'
-  , 'Algae'         => 'Alg' . $ae
-  , 'algae'         => 'alg' . $ae
-  , 'naesthes'      => 'n' . $ae . 's' // Anaesthesia
-  , 'ntennae'       => 'ntenn' . $ae // Antennae
-  , 'Archae'        => 'Arch' . $ae
-  , 'archae'        => 'arch' . $ae
-  , 'cyclopaed'     => 'cyclop' . $ae . 'd' // Encyclopaedia
-  , 'cycloped'      => 'cyclop' . $ae . 'd' // Encyclopedia
-  , 'daemon'        => 'd' . $ae . 'mon' // Daemon
-  , 'iaeresis'      => 'i' . $ae . 'resis' // Diaeresis
-  , 'formulae'      => 'formul' . $ae // Formulae
-  , 'edieval'       => 'edi' . $ae . 'val' // Medieval
-  , 'ebulae'        => 'ebul' . $ae // Nebulae
-  , 'novae'         => 'nov' . $ae // (Super)novae
-  , 'Paleo'         => 'Pal' . $ae . 'o'
-  , 'paleo'         => 'pal' . $ae . 'o'
-  , 'angaea'        => 'ang' . $ae . 'a' // Pangaea
-  , 'personae'      => 'person' . $ae // Personae
-  , 'rimeval'       => 'rim' . $ae . 'val' // Primeval
-  , ' vitae'        => ' vit' . $ae // Curriculum vitae
-  , 'fetid '        => 'f' . $oe . 'tid ' // Foetid
-  , 'foetid'        => 'f' . $oe . 'tid' // Foetid
-  , 'fetus '        => 'f' . $oe . 'tus ' // Foetus
-  , 'foetus'        => 'f' . $oe . 'tus' // Foetus
-  , 'oeuvre'        => $oe . 'uvre' // Will catch manoeuvre
-  , 'Belle epoque'  => 'Belle ' . $e_acute_c . 'poque'
-  , 'belle epoque'  => 'belle ' . $e_acute . 'poque'
-  , 'bete noir'     => 'b' . $e_circum . 'te noir' // Handles endings with or without 'e'
-  , 'ric-a-brac'    => 'ric-' . $a_grave . '-brac'
-  , 'Cliche'        => 'Clich' . $e_acute
-  , 'cliche'        => 'clich' . $e_acute
-  , 'ooperat'       => 'co' . $o_umlaut . 'perat' // Cooperate; covers several variants
-  , 'oordinat'      => 'co' . $o_umlaut . 'rdinat' // Coordinate
-  , 'oup de grace'  => 'oup de gr' . $a_circum . 'ce' // Coup de grace
-  , ' dais '        => ' da' . $i_umlaut . 's ' // Spaced out
-  , 'declasse'      => 'd' . $e_acute . 'class' . $e_acute
-  , 'eja vu'        => $e_acute . 'j' . $a_grave . ' vu' // Deja vu
-  , 'enouement'     => $e_acute . 'nouement' // Denouement
-  , 'detente'       => 'd' . $e_acute . 'tente'
-  , 'oppelganger'   => 'oppelg' . $a_umlaut . 'nger' // Doppelganger
-  , 'El Nino'       => 'El Ni' . $n_tilde . 'o'
-  , 'emigre'        => $e_acute . 'migr' . $e_acute
-  , 'entree'        => 'entr' . $e_acute . 'e'
-  , 'facade'        => 'fa' . $c_cedilla . 'ade'
-  , 'fiance'        => 'fianc' . $e_acute
-  , 'foehn wind'    => 'f' . $o_umlaut . 'hn wind'
-  , 'fohn wind'     => 'f' . $o_umlaut . 'hn wind'
-  , 'alapeno'       => 'alape' . $n_tilde . 'o' // Jalapeno
-  , 'La Nina'       => 'La Ni' . $n_tilde . 'a'
-  , 'matinee'       => 'matin' . $e_acute . 'e'
-  , 'melange'       => 'm' . $e_acute . 'lange'
-  , 'Naivete'       => 'Na' . $i_umlaut . 'vet' . $e_acute // Needs to be in this order
-  , 'naivete'       => 'na' . $i_umlaut . 'vet' . $e_acute // Needs to be in this order
-  , 'naive'         => 'na' . $i_umlaut . 've'
-  , 'Naive'         => 'Na' . $i_umlaut . 've'
-  , ' passe '       => ' pass' . $e_acute . ' '
-  , ' passe.'       => ' pass' . $e_acute . '.'
-  , ' passe!'       => ' pass' . $e_acute . '!'
-  , ' passe?'       => ' pass' . $e_acute . '?'
-  , 'protoge'       => 'prot' . $e_acute . 'g' . $e_acute
-  , 'puree'         => 'pur' . $e_acute . 'e'
-  , 'Quebec'        => 'Qu' . $e_acute . 'bec'
-  , 'morgasbord'    => 'm' . $o_umlaut . 'rg' . $a_ring . 'sbord'
+// Typhography
+function ubik_text_replace_typography() {
+  return apply_filters( 'ubik_text_replace_typography', array(
+    '&#8211;'       => '&#x200A;&ndash;&#x200A;'                        // En dash surrounded with hair spaces
+  , '&#8212;'       => '&#x200A;&mdash;&#x200A;'                        // Em dash surrounded with hair spaces
+  , ' & '           => ' <span class="ampersand">&</span> '             // A styling hook for ampersands
+  , '/No.'          => '<span class="numero">&numero;</span>'           // Numero sign: https://en.wikipedia.org/wiki/Numero_sign
+  , '/|P'           => '<span class="pilcrow">&para;</span>'            // Pilcrow: https://en.wikipedia.org/wiki/Pilcrow
+  , '/|S'           => '<span class="section">&sect;</span>'            // Section symbol: https://en.wikipedia.org/wiki/Section_sign
+  , '/|d'           => '<span class="dagger">&dagger;</span>'           // Dagger
+  , '/|D'           => '<span class="dagger">&Dagger;</span>'           // Double dagger
   ) );
 }
 
@@ -175,16 +154,20 @@ function ubik_text_replace_diacritics() {
 // Figures, numbers, math, etc.
 function ubik_text_replace_figures() {
   return apply_filters( 'ubik_text_replace_figures', array(
-    ' 1/4 '     => '&#x00BC; '
-  , ' 1/2 '     => '&#x00BD; '
-  , ' 3/4 '     => '&#x00BE; '
-  , '^oC'       => '&#x00B0;C'
-  , '^oF'       => '&#x00B0;F'
-  , '+/-'       => '&#x00B1;&#x200A;'
-  , '+-'        => '&#x00B1;&#x200A;'
-  , '^1 '       => '&#x00B9; '
-  , '^2 '       => '&#x00B2; '
-  , '^3 '       => '&#x00B3; '
+    ' 1/4 '     => '&frac14; '
+  , ' 1/2 '     => '&frac12; '
+  , ' 3/4 '     => '&frac34; '
+  , '^oC'       => '&deg;C'
+  , '^oF'       => '&deg;F'
+  , '+/-'       => '&plusmn;'
+  , '+-'        => '&plusmn;'
+  , '^1 '       => '&sup1; '
+  , '^2 '       => '&sup2; '
+  , '^3 '       => '&sup3; '
+  // &pi; Pi
+  // &fnof; function
+  // &sigma; sigma
+  // &there4; therefore
   ) );
 }
 
@@ -193,12 +176,11 @@ function ubik_text_replace_figures() {
 // Currencies
 function ubik_text_replace_currencies() {
   return apply_filters( 'ubik_text_replace_currencies', array(
-    'CNY '      => '&#165;&#x200A;'   // Chinese renminbi
-  , 'EUR '      => '&#8364;&#x200A;'  // Euro
-  , 'GBP '      => '&#163;&#x200A;'   // Pound
-  , 'JPY '      => '&#165;&#x200A;'   // Japanese yen
-  , 'KRW '      => '&#8361;&#x200A;'  // Korean won
-  , 'THB '      => '&#3647;&#x200A;'  // Thai baht
+    'EUR '      => '&euro;&#x200A;'   // Euro
+  , 'GBP '      => '&pound;&#x200A;'  // Pound
+  , 'JPY '      => '&yen;&#x200A;'    // Japanese yen
+  , 'KRW '      => '&#x20A9;&#x200A;' // Korean won
+  , 'THB '      => '&#x0E3F;&#x200A;' // Thai baht
   ) );
 }
 
@@ -207,10 +189,10 @@ function ubik_text_replace_currencies() {
 // Intellectual property
 function ubik_text_replace_ip() {
   return apply_filters( 'ubik_text_replace_ip', array(
-    '(c)'       => '&#x00A9;'         // Copyright: https://en.wikipedia.org/wiki/Copyright_symbol
-  , '(p)'       => '&#x2117;'         // Sound recording: https://en.wikipedia.org/wiki/Sound_recording_copyright_symbol
-  , '(r)'       => '&#x00AE;'         // Registed trademark: https://en.wikipedia.org/wiki/Registered_trademark_symbol
-  , '(sm)'      => '&#x2120;'         // Service mark: https://en.wikipedia.org/wiki/Service_mark_symbol
+    '(c)'       => '&copy;'     // Copyright: https://en.wikipedia.org/wiki/Copyright_symbol
+  , '(p)'       => '&#x2117;'   // Sound recording: https://en.wikipedia.org/wiki/Sound_recording_copyright_symbol
+  , '(r)'       => '&reg;'      // Registed trademark: https://en.wikipedia.org/wiki/Registered_trademark_symbol
+  , '(sm)'      => '&#x2120;'   // Service mark: https://en.wikipedia.org/wiki/Service_mark_symbol
   ) );
 }
 
@@ -234,18 +216,6 @@ function ubik_text_replace_arrows() {
     '==>'       => '&nbsp;&rarr;'
   , '==&gt;'    => '&nbsp;&rarr;'
   , '&lt;=='    => '&larr;&nbsp;'
-  , '/KHOMUT'   => '&#x0E5B;'        // Thai khomut: https://codepoints.net/U+0E5B
-  ) );
-}
-
-
-
-// Zero-width characters
-function ubik_text_replace_zerowidth() {
-  return apply_filters( 'ubik_text_replace_zerowidth', array(
-    '/ZWSP'         => '&#x200B;'   // Zero-width space: https://en.wikipedia.org/wiki/Zero-width_space
-  , '/ZWNJ'         => '&#x200C;'   // Zero-width non-joiner: https://en.wikipedia.org/wiki/Zero-width_non-joiner
-  , '/ZWJ'          => '&#x200D;'   // Zero-width joiner: https://en.wikipedia.org/wiki/Zero-width_joiner
   ) );
 }
 
